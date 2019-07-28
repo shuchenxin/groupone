@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OrderApp</title>
+    </head>
+    <body>
+        <div style="margin-left:15px">
+            <h2>OrderApp</h2>
+            <div>
+                <label>Enter requesting company:</label> 
+                <select id="req_company" name="req_company">
+                    <option value="Xinc">Xinc</option>
+                    <option value="Yinc">Yinc</option>
+                    <option value="Zinc">Zinc</option>
+                </select> 
+                <button onclick="submit_req_company()">Submit</button>
+            </div>
+            </br>
+            </br>
+
+            
+            <div id="forms" style="display: none">                          
+                <label>Part:</label>
+                <label>Quantity:</label>
+                <label>Company:</label>
+                <button type="submit" name="action" value="add_r" onclick="add_request()">Add request</button>
+                <div id="0">     
+                    </br>          
+                    <select class="pNo" name="pNo">
+                        <option value="apple">apple</option>
+                        <option value="banana">banana</option>
+                        <option value="coke">coke</option>
+                        <option value="chair">chair</option>
+                        <option value="pencil">pencil</option>
+                        <option value="table">table</option>
+                        <option value="pen">pen</option>
+                        <option value="cake">cake</option>
+                        <option value="computer">computer</option>
+                        <option value="book">book</option>
+                    </select>
+                    <input class="qty" type="text" name="qty" value="1">
+                    <select id="company" class="company" name="company">
+                        <option id="Xinc" value="Xinc">Xinc</option>
+                        <option id="Yinc" value="Yinc">Yinc</option>
+                        <option id="Zinc" value="Zinc">Zinc</option>
+                    </select> 
+                </div>
+
+            </div>
+
+            </br>
+            <button type="submit" name="action" value="submit_r" id="s_r" onclick="submit_requests()" style="display: none">Submit requests</button>
+            </br></br>
+            <div id="check_order" style="display: none">
+                <label id="check_order">Please review all orders</label> 
+                </br>
+                </br>
+                <div id="result"></div>
+                </br>
+                <button type="submit" name="action" value="Final_sub" onclick="final_submit()" >Final submit</button>
+                <button type="submit" name="action" value="Re_enter" onclick="re_enter()">Enter again</button>
+            </div>
+            
+            
+        </div>
+    </body>
+    <script>
+        var request_company = "";
+        var all_requests = [];
+        var number = 1;
+
+        function submit_req_company(){
+            console.log("final submit");
+            document.getElementById("forms").style.display = "block";
+            document.getElementById("s_r").style.display = "block";
+            request_company = document.getElementById("req_company").value;
+            var x = document.getElementById("company");
+            if (request_company==="Xinc"){
+                x.remove(0);
+            }
+            if (request_company==="Yinc"){
+                x.remove(1);
+            }
+            if (request_company==="Zinc"){
+                x.remove(2);
+            }
+
+        }
+
+        function add_request(){
+            var n = document.createElement("DIV");
+            var p = document.getElementById('0');
+            n.innerHTML = p.innerHTML;
+            n.id = number.toString();
+            number=number+1;
+            document.getElementById("forms").appendChild(n);
+        }
+
+        function submit_requests(){
+            for(var i=0;i<number;i++){
+                var doc = document.getElementById(i.toString());
+                for (var j = 0; j < doc.childNodes.length; j++) {
+                    if (doc.childNodes[j].className == "pNo"
+                        || doc.childNodes[j].className == "qty"
+                        || doc.childNodes[j].className == "company") {
+                        all_requests.push(doc.childNodes[j]);
+                    }  
+                }
+            }
+            review_requests();
+        }
+
+        function review_requests(){
+            document.getElementById("check_order").style.display = "block";
+            for(var i=0; i<all_requests.length; i++){
+                for(var j=0;j<3;j++){
+                    result.innerHTML += all_requests[i+j].value+"  ";
+                }
+                i=i+2;
+            result.innerHTML += "<br>";
+            }
+        }
+
+        function final_submit(){
+            form = document.createElement('form');
+            form.setAttribute('method','POST');
+            form.setAttribute('action','/');
+            myvar = document.createElement('input');
+            myvar.setAttribute('name','number_of_input');
+            myvar.setAttribute('value',number);           
+            form.appendChild(myvar);
+            order_company = document.createElement('input');
+            order_company.setAttribute('name','company_of_order');
+            order_company.setAttribute('value',request_company);           
+            form.appendChild(order_company);
+            for(var i=0;i<all_requests.length;i++){
+                var j=i/3;
+                var part='pNo'.concat(j.toString());
+                var quantity='qty'.concat(j.toString());
+                var company='company'.concat(j.toString());
+                myvar_p = document.createElement('input');
+                myvar_p.setAttribute('name',part);
+                myvar_p.setAttribute('value',all_requests[i].value);
+                myvar_q = document.createElement('input');
+                myvar_q.setAttribute('name',quantity);
+                myvar_q.setAttribute('value',all_requests[i+1].value);
+                myvar_c = document.createElement('input');
+                myvar_c.setAttribute('name',company);
+                myvar_c.setAttribute('value',all_requests[i+2].value);
+                form.appendChild(myvar_p);
+                form.appendChild(myvar_q);
+                form.appendChild(myvar_c);
+                i=i+2;
+            }
+            document.body.appendChild(form);
+            form.submit();
+            alert("final submit");
+        }
+
+        function re_enter() {
+            all_requests.length = 0;
+            result.innerHTML = "";
+            document.getElementById("check_order").style.display = "none";
+        }
+    </script>
+    
+    <style>
+        label {
+            width:200px;
+            display: inline-block;
+        }
+
+        select {
+            width:200px;
+        }
+
+        input {
+            width:195px;
+        }
+    </style>
+</html>
+
+
+
+
+
